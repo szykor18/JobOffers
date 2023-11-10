@@ -5,19 +5,18 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class UserRepositoryTestImpl implements UserRepository{
+public class InMemoryUserRepository implements UserRepository{
     private Map<String, User> userDatabase = new ConcurrentHashMap<>();
-
     @Override
-    public User save(User userToSave) {
+    public User save(User user) {
         UUID id = UUID.randomUUID();
-        User user = User.builder()
+        User savedUser = User.builder()
                 .id(id.toString())
-                .username(userToSave.username())
-                .password(userToSave.password())
+                .username(user.username())
+                .password(user.password())
                 .build();
-        userDatabase.put(user.username(), user);
-        return user;
+        userDatabase.put(savedUser.username(), savedUser);
+        return savedUser;
     }
 
     @Override

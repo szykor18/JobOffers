@@ -5,5 +5,5 @@ import pl.joboffers.domain.offer.dto.JobOfferResponseDto;
 import java.util.List;
 
 public interface OfferFetchable {
-    List<JobOfferResponseDto> fetchOffers();
+    List<JobOfferResponseDto > fetchOffers();
 }
