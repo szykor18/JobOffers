@@ -3,6 +3,7 @@ package pl.joboffers;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import pl.joboffers.infrastructure.offer.http.OfferRestTemplateConfigurationProperties;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,

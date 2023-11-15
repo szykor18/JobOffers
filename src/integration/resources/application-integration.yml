@@ -1,1 +1,8 @@
+joboffers:
+  offer-fetcher:
+    http:
+      scheduler:
+        fetchingFrequency: PT1S
 
+scheduler:
+  enabled: false

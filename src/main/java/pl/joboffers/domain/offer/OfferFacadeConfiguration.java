@@ -11,8 +11,8 @@ import java.util.Optional;
 public class OfferFacadeConfiguration {
 
     @Bean
-    OfferRepository offerRepository() {
-        return new OfferRepository() {
+    OfferFacade offerFacade(OfferFetchable offerFetchable) {
+        OfferRepository repository = new OfferRepository() {
             @Override
             public Optional<Offer> findById(String id) {
                 return Optional.empty();
@@ -43,23 +43,12 @@ public class OfferFacadeConfiguration {
                 return false;
             }
         };
-    }
-    @Bean
-    OfferService offerService() {
-        return new OfferService(offerRepository(), new OfferFetchable() {
-            @Override
-            public List<JobOfferResponseDto> fetchOffers() {
-                return null;
-            }
-        });
-    }
+        OfferService offerService = new OfferService(repository, offerFetchable);
 
-    @Bean
-    OfferFacade offerFacade(OfferService offerService, OfferRepository offerRepository) {
-        return new OfferFacade(offerRepository, offerService);
+        return new OfferFacade(repository, offerService);
     }
 
     OfferFacade createForTests(OfferService offerService, OfferRepository offerRepository) {
-        return offerFacade(offerService, offerRepository);
+        return new OfferFacade(offerRepository, offerService);
     }
 }
