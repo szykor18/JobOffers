@@ -15,8 +15,8 @@ import java.util.List;
 
 @AllArgsConstructor
 @Log4j2
-
 public class OfferRestTemplate implements OfferFetchable{
+    private static final String OFFERS_SERVICE_PATH = "/offers";
 
     private final RestTemplate restTemplate;
     private final String uri;
@@ -25,7 +25,7 @@ public class OfferRestTemplate implements OfferFetchable{
     @Override
     public List<JobOfferResponseDto> fetchOffers() {
         log.info("Started fetching offers using http client");
-        String urlForService = getUrlForService("/offers");
+        String urlForService = getUrlForService(OFFERS_SERVICE_PATH);
         HttpHeaders httpHeaders = new HttpHeaders();
         final HttpEntity<HttpHeaders> requestEntity = new HttpEntity<>(httpHeaders);
         final String url = UriComponentsBuilder.fromHttpUrl(urlForService)

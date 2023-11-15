@@ -11,10 +11,12 @@ import pl.joboffers.domain.offer.dto.JobOfferResponseDto;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest implements ExampleJobOfferResponse {
 
     @Autowired
-    OfferFetchable offerFetchable;
+    OfferFetchable offerFetcher;
     @Test
     public void should_user_see_the_offers_but_have_to_be_logged_in_and_external_service_should_have_some_offers() {
 
@@ -26,11 +28,12 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
                         .withHeader("Content-Type", "application/json")
                         .withBody(bodyWithZeroOffersJson())));
         //when
-        List<JobOfferResponseDto> jobOfferResponseDtos = offerFetchable.fetchOffers();
+        List<JobOfferResponseDto> jobOfferResponses = offerFetcher.fetchOffers();
         //then
-
-
     //    step 2: scheduler ran 1st time and made GET to external server and system added 0 offers to database
+
+
+
     //    step 3: user tried to get JWT token by requesting POST /token with username=someUser, password=somePassword and system returned UNAUTHORIZED(401)
     //    step 4: user made GET /offers with no jwt token and system returned UNAUTHORIZED(401)
     //    step 5: user made POST /register with username=someUser, password=somePassword and system registered user with status OK(200)
