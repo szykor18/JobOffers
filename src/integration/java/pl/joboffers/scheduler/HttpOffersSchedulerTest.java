@@ -12,7 +12,6 @@ import java.time.Duration;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.testcontainers.shaded.com.google.common.collect.Range.atMost;
 
 @SpringBootTest(classes = SpringBootJobOffersApplication.class, properties = "scheduler.enabled=true")
 public class HttpOffersSchedulerTest extends BaseIntegrationTest {

@@ -3,9 +3,11 @@ package pl.joboffers.feature;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.ExampleJobOfferResponse;
+import pl.joboffers.SpringBootJobOffersApplication;
 import pl.joboffers.domain.offer.dto.OfferDto;
 import pl.joboffers.infrastructure.offer.scheduler.HttpOffersScheduler;
 
@@ -13,6 +15,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SpringBootTest(classes = SpringBootJobOffersApplication.class, properties = "scheduler.enabled=true")
 public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest implements ExampleJobOfferResponse {
 
     @Autowired
@@ -28,7 +31,8 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
                         .withHeader("Content-Type", "application/json")
                         .withBody(bodyWithFourOffersJson())));
         //when
-        httpOffersScheduler.fetchAllOffersAndSaveIfNotExists();
+        List<OfferDto> offerDtos = httpOffersScheduler.fetchAllOffersAndSaveIfNotExists();
+        offerDtos.forEach(offer -> offer.companyName());
         //then
 
     //   step 2: scheduler ran 1st time and made GET to external server and system added 0 offers to database
