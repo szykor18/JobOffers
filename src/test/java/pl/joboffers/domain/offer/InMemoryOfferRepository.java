@@ -16,8 +16,6 @@ import java.util.function.Function;
 public class InMemoryOfferRepository implements OfferRepository {
     private final Map<String, Offer> offerDatabase = new ConcurrentHashMap<>();
 
-
-
     @Override
     public Optional<Offer> findById(String id) {
         return Optional.ofNullable(offerDatabase.get(id));

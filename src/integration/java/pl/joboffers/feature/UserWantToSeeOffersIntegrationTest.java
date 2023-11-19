@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = SpringBootJobOffersApplication.class, properties = "scheduler.enabled=true")
+
 public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest implements ExampleJobOfferResponse {
 
     @Autowired
@@ -29,14 +29,12 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
                 .willReturn(WireMock.aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", "application/json")
-                        .withBody(bodyWithFourOffersJson())));
-        //when
-        List<OfferDto> offerDtos = httpOffersScheduler.fetchAllOffersAndSaveIfNotExists();
-        offerDtos.forEach(offer -> offer.companyName());
-        //then
+                        .withBody(bodyWithZeroOffersJson())));
 
     //   step 2: scheduler ran 1st time and made GET to external server and system added 0 offers to database
-
+        //when && then
+        List<OfferDto> offerDtos = httpOffersScheduler.fetchAllOffersAndSaveIfNotExists();
+        assertThat(offerDtos).isEmpty();
 
     //   step 3: user tried to get JWT token by requesting POST /token with username=someUser, password=somePassword and system returned UNAUTHORIZED(401)
     //   step 4: user made GET /offers with no jwt token and system returned UNAUTHORIZED(401)
