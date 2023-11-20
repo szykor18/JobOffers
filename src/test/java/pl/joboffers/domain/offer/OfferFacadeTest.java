@@ -1,18 +1,15 @@
 package pl.joboffers.domain.offer;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 import pl.joboffers.domain.offer.dto.JobOfferRequestDto;
 import pl.joboffers.domain.offer.dto.JobOfferResponseDto;
 import pl.joboffers.domain.offer.dto.OfferDto;
 
-import java.util.DuplicateFormatFlagsException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
-import static org.junit.jupiter.api.Assertions.*;
 
 class OfferFacadeTest {
     OfferFetchable offerFetcher = new InMemoryOfferFetcher(List.of(
@@ -27,7 +24,7 @@ class OfferFacadeTest {
     @Test
     public void should_fetch_all_jobs_from_remote_client_and_save_all_offers_if_repository_is_empty() {
         //given
-        OfferFacade offerFacade = new OfferFacadeConfiguration().createForTests(new OfferService(offerRepository, offerFetcher), offerRepository);
+        OfferFacade offerFacade = new OfferConfiguration().createForTests(new OfferService(offerRepository, offerFetcher), offerRepository);
         assertThat(offerFacade.findAllOffers()).isEmpty();
         //when
         List<OfferDto> offers = offerFacade.fetchAllOffersAndSaveIfNotExists();
@@ -38,7 +35,7 @@ class OfferFacadeTest {
     public void should_save_only_2_offers_when_repository_had_4_added_with_offer_urls() {
         //given
 
-        OfferFacade offerFacade = new OfferFacadeConfiguration().createForTests
+        OfferFacade offerFacade = new OfferConfiguration().createForTests
                 (new OfferService(offerRepository, offerFetcher), offerRepository);
         offerFacade.saveOffer(new JobOfferRequestDto("a","b","c","1"));
         offerFacade.saveOffer(new JobOfferRequestDto("a","b","c","2"));
@@ -55,7 +52,7 @@ class OfferFacadeTest {
     @Test
     public void should_save_4_offers_when_there_are_no_offers_in_database() {
         //given
-        OfferFacade offerFacade = new OfferFacadeConfiguration().createForTests
+        OfferFacade offerFacade = new OfferConfiguration().createForTests
                 (new OfferService(offerRepository, new InMemoryOfferFetcher(List.of())), offerRepository);
         //when
         offerFacade.saveOffer(new JobOfferRequestDto("a","b","c","1"));
@@ -68,7 +65,7 @@ class OfferFacadeTest {
     @Test
     public void should_find_offer_by_id_when_offer_was_saved() {
         //given
-        OfferFacade offerFacade = new OfferFacadeConfiguration().createForTests
+        OfferFacade offerFacade = new OfferConfiguration().createForTests
                 (new OfferService(offerRepository, new InMemoryOfferFetcher(List.of())), offerRepository);
         OfferDto savedOffer = offerFacade.saveOffer(new JobOfferRequestDto("a", "b", "c", "1"));
         //when
@@ -85,7 +82,7 @@ class OfferFacadeTest {
     @Test
     public void should_throw_not_found_exception_when_offer_not_found() {
         //given
-        OfferFacade offerFacade = new OfferFacadeConfiguration().createForTests
+        OfferFacade offerFacade = new OfferConfiguration().createForTests
                 (new OfferService(offerRepository, new InMemoryOfferFetcher(List.of())), offerRepository);
         assertThat(offerFacade.findAllOffers()).isEmpty();
         //when
@@ -98,7 +95,7 @@ class OfferFacadeTest {
     @Test
     public void should_not_save_when_there_is_offer_with_same_offer_url_exists() {
         //given
-        OfferFacade offerFacade = new OfferFacadeConfiguration().createForTests
+        OfferFacade offerFacade = new OfferConfiguration().createForTests
                 (new OfferService(offerRepository, new InMemoryOfferFetcher(List.of())), offerRepository);
         OfferDto savedOffer = offerFacade.saveOffer(new JobOfferRequestDto("a", "b", "c", "100"));
         String savedId = savedOffer.id();
