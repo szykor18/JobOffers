@@ -3,6 +3,7 @@ package pl.joboffers;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import pl.joboffers.infrastructure.offer.http.OfferRestTemplateConfigurationProperties;
 
@@ -10,6 +11,7 @@ import pl.joboffers.infrastructure.offer.http.OfferRestTemplateConfigurationProp
 // then press Enter. You can now see whitespace characters in your code.
 @SpringBootApplication
 @EnableConfigurationProperties({OfferRestTemplateConfigurationProperties.class})
+@EnableMongoRepositories
 public class SpringBootJobOffersApplication {
 
     public static void main(String[] args) {

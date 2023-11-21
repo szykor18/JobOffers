@@ -1,9 +1,13 @@
 package pl.joboffers.feature;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.ExampleJobOfferResponse;
 import pl.joboffers.domain.offer.dto.OfferDto;
@@ -12,26 +16,32 @@ import pl.joboffers.infrastructure.offer.scheduler.HttpOffersScheduler;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest implements ExampleJobOfferResponse {
 
     @Autowired
     HttpOffersScheduler httpOffersScheduler;
     @Test
-    public void should_user_see_the_offers_but_have_to_be_logged_in_and_external_service_should_have_some_offers() {
+    public void should_user_see_the_offers_but_have_to_be_logged_in_and_external_service_should_have_some_offers() throws Exception {
 
     //   step 1: there are no offers in external HTTP server (http://ec2-3-120-147-150.eu-central-1.compute.amazonaws.com:5057/offers)
-        //given
+        //given && when && then
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", "application/json")
-                        .withBody(bodyWithFourOffersJson())));
-        //when
-        httpOffersScheduler.fetchAllOffersAndSaveIfNotExists();
-        //then
+                        .withBody(bodyWithZeroOffersJson())));
+
 
     //   step 2: scheduler ran 1st time and made GET to external server and system added 0 offers to database
+        //given && when
+        List<OfferDto> offerDtos = httpOffersScheduler.fetchAllOffersAndSaveIfNotExists();
+        //then
+        assertThat(offerDtos).isEmpty();
 
 
     //   step 3: user tried to get JWT token by requesting POST /token with username=someUser, password=somePassword and system returned UNAUTHORIZED(401)
@@ -39,11 +49,39 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
     //   step 5: user made POST /register with username=someUser, password=somePassword and system registered user with status OK(200)
     //   step 6: user tried to get JWT token by requesting POST /token with username=someUser, password=somePassword and system returned OK(200) and jwttoken=AAAA.BBBB.CCC
     //   step 7: user made GET /offers with header “Authorization: Bearer AAAA.BBBB.CCC” and system returned OK(200) with 0 offers
+        //given
+        ResultActions perform = mockMvc.perform(get("/offers")
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+        //when
+        MvcResult mvcResult = perform.andExpect(status().isOk()).andReturn();
+        //then
+        String jsonWithOffers = mvcResult.getResponse().getContentAsString();
+        List<OfferDto> offers = objectMapper.readValue(jsonWithOffers, new TypeReference<>() {});
+        assertThat(offers).isEmpty();
+
+
     //   step 8: there are 2 new offers in external HTTP server
     //   step 9: scheduler ran 2nd time and made GET to external server and system added 2 new offers with ids: 1000 and 2000 to database
     //   step 10: user made GET /offers with header “Authorization: Bearer AAAA.BBBB.CCC” and system returned OK(200) with 2 offers with ids: 1000 and 2000
+
+
     //   step 11: user made GET /offers/9999 and system returned NOT_FOUND(404) with message “Offer with id 9999 not found”
-    //   step 12: user made GET /offers/1000 and system returned OK(200) with offer
+        //given
+        //when
+        ResultActions performGetOfferWithId9999 = mockMvc.perform(get("/offers/9999"));
+        //then
+        performGetOfferWithId9999.andExpect(status().isNotFound())
+                .andExpect(content().json(
+                """
+                        {
+                        "message": "Offer with id 9999 not found",
+                        "status": "NOT_FOUND"
+                        }
+                """.trim()));
+
+
+        //   step 12: user made GET /offers/1000 and system returned OK(200) with offer
     //   step 13: there are 2 new offers in external HTTP server
     //   step 14: scheduler ran 3rd time and made GET to external server and system added 2 new offers with ids: 3000 and 4000 to database
     //   step 15: user made GET /offers with header “Authorization: Bearer AAAA.BBBB.CCC” and system returned OK(200) with 4 offers with ids: 1000,2000, 3000 and 4000

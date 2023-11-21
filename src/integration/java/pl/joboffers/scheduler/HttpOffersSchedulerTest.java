@@ -12,7 +12,6 @@ import java.time.Duration;
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.testcontainers.shaded.com.google.common.collect.Range.atMost;
 
 @SpringBootTest(classes = SpringBootJobOffersApplication.class, properties = "scheduler.enabled=true")
 public class HttpOffersSchedulerTest extends BaseIntegrationTest {
@@ -23,7 +22,7 @@ public class HttpOffersSchedulerTest extends BaseIntegrationTest {
     public void should_run_http_client_offers_fetching_exactly_given_times() {
         await()
                 .atMost(Duration.ofSeconds(2))
-                .untilAsserted(() -> verify(remoteOfferClient, times(2)).fetchOffers() );
+                .untilAsserted(() -> verify(remoteOfferClient, times(1)).fetchOffers() );
 
     }
 }

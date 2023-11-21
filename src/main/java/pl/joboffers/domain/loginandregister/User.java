@@ -1,9 +1,12 @@
 package pl.joboffers.domain.loginandregister;
 
 import lombok.Builder;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Builder
-record User(String id,
+@Document("users")
+record User(@Id String id,
             String username,
             String password
             ) {
