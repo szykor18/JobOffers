@@ -2,3 +2,18 @@ spring:
   data:
     mongodb:
       uri: mongodb://admin:admin@localhost:27017/offers
+
+joboffers:
+  offer-fetcher:
+    http:
+      scheduler:
+        fetchingFrequency: PT3H
+      client:
+        config:
+          uri: http://ec2-3-120-147-150.eu-central-1.compute.amazonaws.com
+          port: 5057
+          connectionTimeout: 5000
+          readTimeout: 5000
+
+scheduler:
+  enabled: true

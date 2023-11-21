@@ -1,7 +1,7 @@
 package pl.joboffers.domain.offer.dto;
 
-public record JobOfferResponseDto(String companyName,
-                                  String position,
+public record JobOfferResponseDto(String company,
+                                  String title,
                                   String salary,
                                   String offerUrl) {
 }
