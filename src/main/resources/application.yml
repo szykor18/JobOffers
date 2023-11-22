@@ -2,6 +2,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://admin:admin@localhost:27017/offers
+      auto-index-creation: true
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER

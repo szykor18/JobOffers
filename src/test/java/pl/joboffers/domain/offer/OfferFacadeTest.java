@@ -104,7 +104,7 @@ class OfferFacadeTest {
         Throwable exception = catchThrowable(() -> offerFacade.saveOffer(new JobOfferRequestDto("notA", "notB", "notC", "100")));
         //then
         AssertionsForClassTypes.assertThat(exception)
-                .isInstanceOf(OfferDuplicateKeyException.class)
+                .isInstanceOf(OfferDuplicateException.class)
                 .hasMessage("Offer with offerUrl '100' already exists");
     }
 }

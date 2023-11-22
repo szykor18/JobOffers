@@ -32,5 +32,4 @@ public class OfferFacade {
                 .map(OfferMapper::mapFromOfferToOfferDto)
                 .toList();
     }
-
 }
