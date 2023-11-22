@@ -1,5 +1,6 @@
 package pl.joboffers.infrastructure.offer.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class OfferRestController {
     }
 
     @PostMapping
-    public ResponseEntity<OfferDto> saveOfferFromUser(@RequestBody JobOfferRequestDto offerRequestDto) {
+    public ResponseEntity<OfferDto> saveOfferFromUser(@RequestBody @Valid JobOfferRequestDto offerRequestDto) {
         OfferDto savedOffer = offerFacade.saveOffer(offerRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedOffer);
     }
