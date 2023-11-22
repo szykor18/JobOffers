@@ -45,7 +45,4 @@ public class BaseIntegrationTest {
         registry.add("joboffers.offer-fetcher.http.client.config.uri", () -> WIRE_MOCK_HOST);
         registry.add("joboffers.offer-fetcher.http.client.config.port", () -> wireMockServer.getPort());
     }
-
-
-
 }
