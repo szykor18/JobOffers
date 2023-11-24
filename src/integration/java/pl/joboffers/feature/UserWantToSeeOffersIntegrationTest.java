@@ -177,12 +177,12 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
                         new OfferDto(id3,
                                 "Sollers Consulting",
                                 "Junior Java Developer",
-                                "7 500 â\u0080\u0093 11 500 PLN",
+                                "7 500 - 11 500 PLN",
                                 "https://nofluffjobs.com/pl/job/junior-java-developer-sollers-consulting-warszawa-s6et1ucc"),
                         new OfferDto(id4,
                                 "Vertabelo S.A.",
                                 "Junior Full Stack Developer",
-                                "7 000 â\u0080\u0093 9 000 PLN",
+                                "7 000 - 9 000 PLN",
                                 "https://nofluffjobs.com/pl/job/junior-full-stack-developer-vertabelo-remote-k7m9xpnm")
                 ));
 
