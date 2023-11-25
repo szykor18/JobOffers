@@ -22,7 +22,7 @@ public class OfferClientConfig {
     }
 
     @Bean
-    public RestTemplate restTemplate(RestTemplateResponseErrorHandler restTemplateResponseErrorHandler) {
+    public RestTemplate restTemplate(RestTemplateResponseErrorHandler restTemplateResponseErrorHandler, OfferRestTemplateConfigurationProperties properties) {
         return new RestTemplateBuilder()
                 .errorHandler(restTemplateResponseErrorHandler)
                 .setReadTimeout(Duration.ofMillis(properties.readTimeout()))
@@ -31,7 +31,7 @@ public class OfferClientConfig {
     }
 
     @Bean
-    public OfferFetchable remoteOfferFetchableClient(RestTemplate restTemplate) {
+    public OfferFetchable remoteOfferFetchableClient(RestTemplate restTemplate, OfferRestTemplateConfigurationProperties properties) {
         return new OfferRestTemplate(restTemplate, properties.uri(), properties.port());
     }
 
