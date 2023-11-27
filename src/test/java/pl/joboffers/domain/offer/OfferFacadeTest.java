@@ -90,7 +90,7 @@ class OfferFacadeTest {
         //then
         AssertionsForClassTypes.assertThat(exception)
                 .isInstanceOf(OfferNotFoundException.class)
-                .hasMessage("Offer with id 'someId' not found");
+                .hasMessage("Offer with id someId not found");
     }
     @Test
     public void should_not_save_when_there_is_offer_with_same_offer_url_exists() {
@@ -104,7 +104,7 @@ class OfferFacadeTest {
         Throwable exception = catchThrowable(() -> offerFacade.saveOffer(new JobOfferRequestDto("notA", "notB", "notC", "100")));
         //then
         AssertionsForClassTypes.assertThat(exception)
-                .isInstanceOf(OfferDuplicateKeyException.class)
+                .isInstanceOf(OfferDuplicateException.class)
                 .hasMessage("Offer with offerUrl '100' already exists");
     }
 }
