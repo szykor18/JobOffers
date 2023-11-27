@@ -2,11 +2,10 @@ package pl.joboffers.infrastructure.offer.http;
 
 import lombok.AllArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.joboffers.domain.offer.OfferFetchable;
 import pl.joboffers.domain.offer.dto.JobOfferResponseDto;
@@ -27,21 +26,32 @@ public class OfferRestTemplate implements OfferFetchable{
         log.info("Started fetching offers using http client");
         String urlForService = getUrlForService(OFFERS_SERVICE_PATH);
         HttpHeaders httpHeaders = new HttpHeaders();
+        try {
         final HttpEntity<HttpHeaders> requestEntity = new HttpEntity<>(httpHeaders);
-        final String url = UriComponentsBuilder.fromHttpUrl(urlForService)
-                .toUriString();
-        ResponseEntity<List<JobOfferResponseDto>> response = restTemplate.exchange(
-            url,
-            HttpMethod.GET,
-            requestEntity,
-            new ParameterizedTypeReference<>() {}
-        );
-        final List<JobOfferResponseDto> body = response.getBody();
-        if (body == null) {
-            log.info("Response Body was null returning empty list");
+        final String url = UriComponentsBuilder.fromHttpUrl(urlForService).toUriString();
+            ResponseEntity<List<JobOfferResponseDto>> response = makeGetRequest(url, requestEntity);
+            final List<JobOfferResponseDto> body = response.getBody();
+            log.info("Success Response Body Returned: " + body);
+            return body;
+        } catch (ResourceAccessException exception) {
+            log.error("Error while fetching offers using http client: " + exception.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        log.info("Success Response Body Returned: " + body);
-        return body;
+    }
+
+    private ResponseEntity<List<JobOfferResponseDto>> makeGetRequest(String url, HttpEntity<HttpHeaders> requestEntity) {
+        ResponseEntity<List<JobOfferResponseDto>> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                requestEntity,
+                new ParameterizedTypeReference<>() {
+                }
+        );
+        if (response.getBody() == null) {
+            log.info("Response Body was null returning empty list");
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
+        return response;
     }
 
     private String getUrlForService(String service) {
