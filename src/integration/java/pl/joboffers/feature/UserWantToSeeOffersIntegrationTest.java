@@ -13,9 +13,11 @@ import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.ExampleJobOfferResponse;
 import pl.joboffers.domain.loginandregister.dto.RegisterResultDto;
 import pl.joboffers.domain.offer.dto.OfferDto;
+import pl.joboffers.infrastructure.loginandregister.controller.dto.JwtResponseDto;
 import pl.joboffers.infrastructure.offer.scheduler.HttpOffersScheduler;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -50,7 +52,7 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
 
     //   step 3: user tried to get JWT token by requesting POST /token with username=someUser, password=somePassword and system returned UNAUTHORIZED(401)
         //given && when
-        ResultActions performFailedLoginRequest = mockMvc.perform(post("/token")
+        ResultActions performLoginBeforeRegistration = mockMvc.perform(post("/token")
                 .content("""
                         {
                         "username": "someUser",
@@ -59,7 +61,7 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
                         """.trim())
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
         //then
-        performFailedLoginRequest
+        performLoginBeforeRegistration
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().json(
                         """
@@ -71,7 +73,7 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
                 ));
 
 
-    //   step 4: user made GET /offers with no jwt token and system returned UNAUTHORIZED(401)
+    //   step 4: user made GET /offers with no jwt token and system returned FORBIDDEN(403)
         //given && when
         ResultActions performGetWithoutToken = mockMvc.perform(get("/offers")
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
@@ -80,9 +82,7 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
 
 
     //   step 5: user made POST /register with username=someUser, password=somePassword and system registered user with status OK(200)
-        //given
-
-        //when
+        //given && when
         ResultActions performRegister = mockMvc.perform(post("/register")
                 .content("""
                         {
@@ -103,16 +103,28 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
 
 
     //   step 6: user tried to get JWT token by requesting POST /token with username=someUser, password=somePassword and system returned OK(200) and jwttoken=AAAA.BBBB.CCC
-        //given
-
-        //when
-
+        //given && when
+        ResultActions performLoginAfterRegistration = mockMvc.perform(post("/token")
+                .content("""
+                        {
+                        "username": "someUser",
+                        "password": "somePassword"
+                        }
+                        """.trim())
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
         //then
+        MvcResult mvcResultToken= performLoginAfterRegistration.andExpect(status().isOk()).andReturn();
+        String jsonResultToken = mvcResultToken.getResponse().getContentAsString();
+        JwtResponseDto jwtResponseDto = objectMapper.readValue(jsonResultToken, JwtResponseDto.class);
+        String generatedToken = jwtResponseDto.token();
+        assertThat(jwtResponseDto.username()).isEqualTo("someUser");
+        assertThat(generatedToken).matches(Pattern.compile("^([A-Za-z0-9-_=]+\\.)+([A-Za-z0-9-_=])+\\.?$"));
 
 
-    //   step 7: user made GET /offers with header “Authorization: Bearer AAAA.BBBB.CCC” and system returned OK(200) with 0 offers
+        //   step 7: user made GET /offers with header “Authorization: Bearer AAAA.BBBB.CCC” and system returned OK(200) with 0 offers
         //given
         ResultActions perform = mockMvc.perform(get("/offers")
+                        .header("Authorization", "Bearer " + generatedToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
         );
         //when
@@ -143,6 +155,7 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
     //   step 10: user made GET /offers with header “Authorization: Bearer AAAA.BBBB.CCC” and system returned OK(200) with 2 offers with ids: 1000 and 2000
         //given && when
         ResultActions performGet = mockMvc.perform(get("/offers")
+                .header("Authorization", "Bearer " + generatedToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
         MvcResult mvcResultTwoOffers = performGet.andExpect(status().isOk()).andReturn();
         String jsonTwoOffers = mvcResultTwoOffers.getResponse().getContentAsString();
@@ -168,7 +181,8 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
         //   step 11: user made GET /offers/9999 and system returned NOT_FOUND(404) with message “Offer with id 9999 not found”
         //given
         //when
-        ResultActions performGetOfferWithId9999 = mockMvc.perform(get("/offers/9999"));
+        ResultActions performGetOfferWithId9999 = mockMvc.perform(get("/offers/9999")
+                .header("Authorization", "Bearer " + generatedToken));
         //then
         performGetOfferWithId9999.andExpect(status().isNotFound())
                 .andExpect(content().json(
@@ -182,7 +196,8 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
 
     //   step 12: user made GET /offers/1000 and system returned OK(200) with offer
         //given && when
-        ResultActions performGetById = mockMvc.perform(get("/offers/" + id1));
+        ResultActions performGetById = mockMvc.perform(get("/offers/" + id1)
+                .header("Authorization", "Bearer " + generatedToken));
         MvcResult mvcResultById = performGetById.andExpect(status().isOk()).andReturn();
         String jsonOfferDto = mvcResultById.getResponse().getContentAsString();
         OfferDto offersById = objectMapper.readValue(jsonOfferDto, OfferDto.class);
@@ -213,6 +228,7 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
     //   step 15: user made GET /offers with header “Authorization: Bearer AAAA.BBBB.CCC” and system returned OK(200) with 4 offers with ids: 1000,2000, 3000 and 4000
         //given && when
         ResultActions performGetFourOffers = mockMvc.perform(get("/offers")
+                .header("Authorization", "Bearer " + generatedToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8"));
         MvcResult mvcResultFourOffers = performGetFourOffers.andExpect(status().isOk()).andReturn();
         String jsonFourOffers = mvcResultFourOffers.getResponse().getContentAsString();
@@ -248,7 +264,9 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
 
     //   step 16: user made POST /offers with header “Authorization: Bearer AAAA.BBBB.CCC” and offer as body and system returned CREATED(201) with saved offer
         //given && when
-        ResultActions performPostOffers = mockMvc.perform(post("/offers").content(
+        ResultActions performPostOffers = mockMvc.perform(post("/offers")
+                .header("Authorization", "Bearer " + generatedToken)
+                .content(
                         """
                                 {
                                 "companyName": "Szymon's company",
@@ -276,6 +294,7 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
         String id = savedOfferByUser.id();
         //when
         ResultActions performGetOfferWithIdOfSavedOffer = mockMvc.perform(get("/offers/" + id)
+                        .header("Authorization", "Bearer " + generatedToken)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                         .andExpect(status().isOk());
         String jsonOfferById = performGetOfferWithIdOfSavedOffer.andReturn().getResponse().getContentAsString();
