@@ -58,10 +58,27 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
                         """.trim())
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
         //when
-        performFailedLoginRequest.andExpect(status().isForbidden());
+        performFailedLoginRequest
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().json(
+                        """
+                        {
+                        "message": "Bad Credentials",
+                        "status": "UNAUTHORIZED"
+                        }
+                        """.trim()
+                ));
+
+    //   step 4: user made GET /offers with no jwt token and system returned UNAUTHORIZED(401)
+        //given
+
+        //when
+        //ResultActions performGetWithoutToken = mockMvc.perform(get("/offers")
+          //      .contentType(MediaType.APPLICATION_JSON));
+        //then
+        //performGetWithoutToken.andExpect(status().isUnauthorized());
 
 
-        //   step 4: user made GET /offers with no jwt token and system returned UNAUTHORIZED(401)
     //   step 5: user made POST /register with username=someUser, password=somePassword and system registered user with status OK(200)
     //   step 6: user tried to get JWT token by requesting POST /token with username=someUser, password=somePassword and system returned OK(200) and jwttoken=AAAA.BBBB.CCC
     //   step 7: user made GET /offers with header “Authorization: Bearer AAAA.BBBB.CCC” and system returned OK(200) with 0 offers

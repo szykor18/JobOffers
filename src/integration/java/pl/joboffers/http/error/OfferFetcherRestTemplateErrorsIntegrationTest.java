@@ -77,13 +77,12 @@ public class OfferFetcherRestTemplateErrorsIntegrationTest implements ExampleJob
                         .withBody(bodyWithOneOfferJson())));
         //when
         Throwable throwable = catchThrowable(() -> offerFetchable.fetchOffers());
-        throwable = throwable;
         //then
         assertThat(throwable).isInstanceOf(ResponseStatusException.class);
         assertThat(throwable.getMessage()).isEqualTo("204 NO_CONTENT");
     }
     @Test
-    public void should_return_500_internal_server_error_when_malfomed_response_chunk() {
+    public void should_return_500_internal_server_error_when_malformed_response_chunk() {
         //given
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()
@@ -92,7 +91,6 @@ public class OfferFetcherRestTemplateErrorsIntegrationTest implements ExampleJob
                         .withFault(Fault.MALFORMED_RESPONSE_CHUNK)));
         //when
         Throwable throwable = catchThrowable(() -> offerFetchable.fetchOffers());
-        throwable = throwable;
         //then
         assertThat(throwable).isInstanceOf(ResponseStatusException.class);
         assertThat(throwable.getMessage()).isEqualTo("500 INTERNAL_SERVER_ERROR");

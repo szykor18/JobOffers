@@ -1,10 +1,13 @@
 package pl.joboffers.infrastructure.loginandregister;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.joboffers.infrastructure.loginandregister.dto.JwtResponseDto;
+import pl.joboffers.infrastructure.loginandregister.dto.TokenRequestDto;
 import pl.joboffers.infrastructure.security.jwt.JwtAuthenticator;
 
 @RestController
@@ -14,7 +17,7 @@ public class TokenRestController {
     private final JwtAuthenticator jwtAuthenticator;
 
     @PostMapping("/token")
-    public ResponseEntity<JwtResponseDto> loginAndRetrieveToken(@RequestBody TokenRequestDto tokenRequestDto) {
+    public ResponseEntity<JwtResponseDto> loginAndRetrieveToken(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
         final JwtResponseDto jwtResponseDto = jwtAuthenticator.authenticateAndGenerateToken(tokenRequestDto);
         return ResponseEntity.ok(jwtResponseDto);
     }
