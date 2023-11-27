@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.ExampleJobOfferResponse;
+import pl.joboffers.domain.loginandregister.dto.RegisterResultDto;
 import pl.joboffers.domain.offer.dto.OfferDto;
 import pl.joboffers.infrastructure.offer.scheduler.HttpOffersScheduler;
 
@@ -48,7 +49,7 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
 
 
     //   step 3: user tried to get JWT token by requesting POST /token with username=someUser, password=somePassword and system returned UNAUTHORIZED(401)
-        //given
+        //given && when
         ResultActions performFailedLoginRequest = mockMvc.perform(post("/token")
                 .content("""
                         {
@@ -57,7 +58,7 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
                         }
                         """.trim())
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
-        //when
+        //then
         performFailedLoginRequest
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().json(
@@ -69,18 +70,46 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
                         """.trim()
                 ));
 
-    //   step 4: user made GET /offers with no jwt token and system returned UNAUTHORIZED(401)
-        //given
 
-        //when
-        //ResultActions performGetWithoutToken = mockMvc.perform(get("/offers")
-          //      .contentType(MediaType.APPLICATION_JSON));
+    //   step 4: user made GET /offers with no jwt token and system returned UNAUTHORIZED(401)
+        //given && when
+        ResultActions performGetWithoutToken = mockMvc.perform(get("/offers")
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
         //then
-        //performGetWithoutToken.andExpect(status().isUnauthorized());
+        performGetWithoutToken.andExpect(status().isForbidden());
 
 
     //   step 5: user made POST /register with username=someUser, password=somePassword and system registered user with status OK(200)
+        //given
+
+        //when
+        ResultActions performRegister = mockMvc.perform(post("/register")
+                .content("""
+                        {
+                        "username": "someUser",
+                        "password": "somePassword"
+                        }
+                        """.trim())
+                .contentType(MediaType.APPLICATION_JSON_VALUE));
+        //then
+        MvcResult mvcResultRegistration = performRegister.andExpect(status().isCreated()).andReturn();
+        String jsonResultRegistration = mvcResultRegistration.getResponse().getContentAsString();
+        RegisterResultDto registerResultDto = objectMapper.readValue(jsonResultRegistration, RegisterResultDto.class);
+        assertAll(
+                () -> assertThat(registerResultDto.username()).isEqualTo("someUser"),
+                () -> assertThat(registerResultDto.isCreated()).isTrue(),
+                () -> assertThat(registerResultDto.id()).isNotNull()
+        );
+
+
     //   step 6: user tried to get JWT token by requesting POST /token with username=someUser, password=somePassword and system returned OK(200) and jwttoken=AAAA.BBBB.CCC
+        //given
+
+        //when
+
+        //then
+
+
     //   step 7: user made GET /offers with header “Authorization: Bearer AAAA.BBBB.CCC” and system returned OK(200) with 0 offers
         //given
         ResultActions perform = mockMvc.perform(get("/offers")
