@@ -26,22 +26,18 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable();
-        httpSecurity.authorizeRequests()
-                .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/v3/api-docs").permitAll()
-                .antMatchers("/webjars/**").permitAll()
-                .antMatchers("/token/**").permitAll()
-                .antMatchers("/register/**").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .headers().frameOptions().disable()
-                .and().httpBasic().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .exceptionHandling();
+        httpSecurity.csrf(csrf -> csrf.disable());
+        httpSecurity.authorizeHttpRequests( auth -> auth
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/v3/api-docs").permitAll()
+                .requestMatchers("/webjars/**").permitAll()
+                .requestMatchers("/token/**").permitAll()
+                .requestMatchers("/register/**").permitAll()
+                .requestMatchers("/swagger-resources/**").permitAll()
+                .anyRequest().authenticated())
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
+                .httpBasic(httpBasic -> httpBasic.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return httpSecurity.build();
-
     }
 }
