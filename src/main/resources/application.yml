@@ -20,3 +20,9 @@ joboffers:
 
 scheduler:
   enabled: true
+
+jwt:
+  auth:
+    expirationDays: 30
+    secretKey: ${JWT_SECRET_KEY}
+    issuer: job-offers-backend-service

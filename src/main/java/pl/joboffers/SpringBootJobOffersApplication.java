@@ -6,9 +6,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import pl.joboffers.infrastructure.offer.http.OfferRestTemplateConfigurationProperties;
+import pl.joboffers.infrastructure.security.jwt.JwtConfigurationProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties({OfferRestTemplateConfigurationProperties.class})
+@EnableConfigurationProperties({OfferRestTemplateConfigurationProperties.class, JwtConfigurationProperties.class})
 @EnableMongoRepositories
 public class SpringBootJobOffersApplication {
 

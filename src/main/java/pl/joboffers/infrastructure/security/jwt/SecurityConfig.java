@@ -1,5 +1,6 @@
 package pl.joboffers.infrastructure.security.jwt;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +15,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import pl.joboffers.domain.loginandregister.LoginAndRegisterFacade;
 
 @Configuration
+@AllArgsConstructor
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -44,7 +48,8 @@ public class SecurityConfig {
                 .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .httpBasic(httpBasic -> httpBasic.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 }
