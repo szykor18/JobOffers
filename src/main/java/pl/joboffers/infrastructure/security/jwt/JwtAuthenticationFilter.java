@@ -42,6 +42,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         DecodedJWT jwt = jwtVerifier.verify(token.substring(BEARER_LENGTH_TO_SKIP_IN_TOKEN));
         return new UsernamePasswordAuthenticationToken(jwt.getSubject(), null, Collections.emptyList());
     }
-
-
 }
