@@ -15,10 +15,8 @@ import pl.joboffers.domain.loginandregister.dto.RegisterResultDto;
 import pl.joboffers.domain.offer.dto.OfferDto;
 import pl.joboffers.infrastructure.loginandregister.controller.dto.JwtResponseDto;
 import pl.joboffers.infrastructure.offer.scheduler.HttpOffersScheduler;
-
 import java.util.List;
 import java.util.regex.Pattern;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
