@@ -1,4 +1,4 @@
-package pl.joboffers.http.offerfetcher;
+package pl.joboffers.http.error;
 
 import org.springframework.web.client.RestTemplate;
 import pl.joboffers.domain.offer.OfferFetchable;

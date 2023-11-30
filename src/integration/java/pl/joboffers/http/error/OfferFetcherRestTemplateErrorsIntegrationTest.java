@@ -1,4 +1,4 @@
-package pl.joboffers.http.offerfetcher;
+package pl.joboffers.http.error;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Fault;
@@ -82,7 +82,7 @@ public class OfferFetcherRestTemplateErrorsIntegrationTest implements ExampleJob
         assertThat(throwable.getMessage()).isEqualTo("204 NO_CONTENT");
     }
     @Test
-    public void should_return_500_internal_server_error_when_malfomed_response_chunk() {
+    public void should_return_500_internal_server_error_when_malformed_response_chunk() {
         //given
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()
@@ -97,15 +97,15 @@ public class OfferFetcherRestTemplateErrorsIntegrationTest implements ExampleJob
     }
     @Test
     public void should_return_500_internal_server_error_when_random_data_then_close() {
-        //given
+        // given
         wireMockServer.stubFor(WireMock.get("/offers")
                 .willReturn(WireMock.aResponse()
                         .withStatus(HttpStatus.OK.value())
-                        .withHeader("Content-Type", "application/json")
+                        .withHeader("Content-Type", "application-json")
                         .withFault(Fault.RANDOM_DATA_THEN_CLOSE)));
-        //when
+        // when
         Throwable throwable = catchThrowable(() -> offerFetchable.fetchOffers());
-        //then
+        // then
         assertThat(throwable).isInstanceOf(ResponseStatusException.class);
         assertThat(throwable.getMessage()).isEqualTo("500 INTERNAL_SERVER_ERROR");
     }

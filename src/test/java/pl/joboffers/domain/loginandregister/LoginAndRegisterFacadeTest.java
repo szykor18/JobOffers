@@ -2,6 +2,7 @@ package pl.joboffers.domain.loginandregister;
 
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.BadCredentialsException;
 import pl.joboffers.domain.loginandregister.dto.RegisterResultDto;
 import pl.joboffers.domain.loginandregister.dto.RegisteringUserDto;
 import pl.joboffers.domain.loginandregister.dto.UserDto;
@@ -19,9 +20,9 @@ class LoginAndRegisterFacadeTest {
         //when
         Throwable exception = catchThrowable( () -> loginAndRegisterFacade.findByUsername(username));
         //then
-        AssertionsForClassTypes.assertThat(exception)
-                .isInstanceOf(UserNotFoundException.class)
-                .hasMessage("User with username 'john' not found");
+        assertThat(exception)
+                .isInstanceOf(BadCredentialsException.class)
+                .hasMessage("john");
     }
     @Test
     public void should_find_user_by_username() {

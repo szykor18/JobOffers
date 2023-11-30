@@ -2,6 +2,7 @@ package pl.joboffers.apivalidationerror;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.ResultActions;
 import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.infrastructure.apivalidation.ApiValidationErrorResponse;
@@ -13,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ApiValidationFailedIntegrationTest extends BaseIntegrationTest {
 
     @Test
+    @WithMockUser
     public void should_return_bad_request_and_validation_message_when_empty_and_null_in_offer_save_request() throws Exception {
         //given && when
         ResultActions performPostOffers = mockMvc.perform(post("/offers")
