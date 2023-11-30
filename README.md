@@ -68,10 +68,10 @@ Application provides five endpoints: for retrieving all offers, for retrieving s
 
 Service url: http://localhost:8080
 
-| HTTP METHOD | Endpoint           |          REQUEST            |   RESPONSE   |                 Function                   |
-|-------------|--------------------|-----------------------------------------------------------------------------------------|
-| GET         |  /offers           |              -              |     JSON     | Retrieve all available offers              |
-| GET         |  /offers/{offerId} |   PATH VARIABLE (offerId)   |     JSON     | Retrieve an offer for a given ID           |
-| POST        |  /offers           |      BODY-JSON (offer)      |     JSON     | Add new offer                              |
-| POST        |  /register         | BODY-JSON (registerRequest) |     JSON     | Register a new user                        |
-| POST        |  /token            |  BODY-JSON (loginRequest)   |     JSON     | Generate an access token with login details|
+| HTTP METHOD | Endpoint           |          REQUEST            |   RESPONSE   |                 Function                    |
+|-------------|--------------------|-----------------------------|--------------|---------------------------------------------|
+| GET         |  /offers           |              -              |     JSON     | Retrieve all available offers               |
+| GET         |  /offers/{offerId} |   PATH VARIABLE (offerId)   |     JSON     | Retrieve an offer for a given ID            |
+| POST        |  /offers           |      BODY-JSON (offer)      |     JSON     | Add new offer                               |
+| POST        |  /register         | BODY-JSON (registerRequest) |     JSON     | Register a new user                         |
+| POST        |  /token            |  BODY-JSON (loginRequest)   |     JSON     | Generate an access token with login details |
