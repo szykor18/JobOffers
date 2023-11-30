@@ -6,9 +6,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.SpringBootJobOffersApplication;
 import pl.joboffers.domain.offer.OfferFetchable;
-
 import java.time.Duration;
-
 import static org.awaitility.Awaitility.await;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

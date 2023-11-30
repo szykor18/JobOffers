@@ -29,6 +29,8 @@
         <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
         <swagger.version>2.2.0</swagger.version>
         <java-jwt.version>4.0.0</java-jwt.version>
+        <spring-data-redis.version>2.4.5</spring-data-redis.version>
+        <jedis.version>3.3.0</jedis.version>
     </properties>
     <dependencies>
 <!--        SPRING BOOT-->
@@ -142,6 +144,17 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>${java-jwt.version}</version>
+        </dependency>
+<!--        REDIS-->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>${spring-data-redis.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
         </dependency>
     </dependencies>
     <build>
