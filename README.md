@@ -75,3 +75,10 @@ Service url: http://localhost:8080
 | POST        |  /offers           |      BODY-JSON (offer)      |     JSON     | Add new offer                               |
 | POST        |  /register         | BODY-JSON (registerRequest) |     JSON     | Register a new user                         |
 | POST        |  /token            |  BODY-JSON (loginRequest)   |     JSON     | Generate an access token with login details |
+
+<br>
+Future plans:
+
+- *Implement frontend with Angular*
+- *Deploying on AWS*
+- *Extract modules to microservices architecture*
