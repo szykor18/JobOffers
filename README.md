@@ -1,4 +1,4 @@
-# JobOffers (backend project)
+# JobOffers (Full Stack Application)
 
 The Job Offers application elevates the job search experience, focusing on opportunities for Junior Java Developers sourced directly from various websites. Operating seamlessly, it gathers job listings in a MongoDB database and employs intelligent caching for swift delivery of information for 60 minutes using Redis. Additionally, it ensures complete security by enabling user registration, login, and JWT token generation. Key features that distinguish this application:
 - *Integration with Remote HTTP Server*
@@ -42,6 +42,11 @@ Testing:<br>
 ![image](https://img.shields.io/badge/Junit5-25A162?style=for-the-badge&logo=junit5&logoColor=white) &nbsp;
 ![image](https://img.shields.io/badge/Mockito-78A641?style=for-the-badge) &nbsp;
 ![image](https://img.shields.io/badge/Testcontainers-9B489A?style=for-the-badge) &nbsp;
+
+Frontend:<br>
+<img src="https://img.shields.io/badge/angular-%23DD0031.svg?style=for-the-badge&logo=angular&logoColor=white" alt=""> &nbsp;
+<img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt=""> &nbsp;
+<img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt=""> &nbsp;
 
 
 ## Installation and run
