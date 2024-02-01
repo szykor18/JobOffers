@@ -1,6 +1,6 @@
 # JobOffers (Full Stack Application)
 
-You can chech the application here: https://www.aws-joboffers.com (soon)
+You can chech the application here: <a href="http://ec2-52-28-84-79.eu-central-1.compute.amazonaws.com:8000/swagger-ui/index.html#/">http://ec2-52-28-84-79.eu-central-1.compute.amazonaws.com:8000/swagger-ui/index.html#/</a>
 
 The Job Offers application elevates the job search experience, focusing on opportunities for Junior Java Developers sourced directly from various websites. Operating seamlessly, it gathers job listings in a MongoDB database and employs intelligent caching for swift delivery of information for 60 minutes using Redis. Additionally, it ensures complete security by enabling user registration, login, and JWT token generation. Key features that distinguish this application:
 - *Integration with Remote HTTP Server*
