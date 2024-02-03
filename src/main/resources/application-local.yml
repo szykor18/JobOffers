@@ -5,7 +5,7 @@ spring:
       time-to-live: PT60M
   data:
     mongodb:
-      uri: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB_NAME}?authSource=${MONGO_AUTH_SOURCE}
+      uri: mongodb://admin:admin@localhost:27017/offers
       auto-index-creation: true
     redis:
       host: ${REDIS_HOST:localhost}
@@ -31,8 +31,8 @@ scheduler:
 jwt:
   auth:
     expirationDays: 30
-    secretKey: ${JWT_SECRET}
+    secretKey: ${JWT_SECRET_KEY}
     issuer: job-offers-backend-service
 
 server:
-  port: 8000
+  port: 8080

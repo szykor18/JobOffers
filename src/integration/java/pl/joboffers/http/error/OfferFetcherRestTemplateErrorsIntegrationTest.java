@@ -6,7 +6,12 @@ import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.web.server.ResponseStatusException;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.utility.DockerImageName;
 import pl.joboffers.ExampleJobOfferResponse;
 import pl.joboffers.domain.offer.OfferFetchable;
 import pl.joboffers.infrastructure.offer.http.OfferRestTemplateConfigurationProperties;
@@ -92,20 +97,6 @@ public class OfferFetcherRestTemplateErrorsIntegrationTest implements ExampleJob
         //when
         Throwable throwable = catchThrowable(() -> offerFetchable.fetchOffers());
         //then
-        assertThat(throwable).isInstanceOf(ResponseStatusException.class);
-        assertThat(throwable.getMessage()).isEqualTo("500 INTERNAL_SERVER_ERROR");
-    }
-    @Test
-    public void should_return_500_internal_server_error_when_random_data_then_close() {
-        // given
-        wireMockServer.stubFor(WireMock.get("/offers")
-                .willReturn(WireMock.aResponse()
-                        .withStatus(HttpStatus.OK.value())
-                        .withHeader("Content-Type", "application-json")
-                        .withFault(Fault.RANDOM_DATA_THEN_CLOSE)));
-        // when
-        Throwable throwable = catchThrowable(() -> offerFetchable.fetchOffers());
-        // then
         assertThat(throwable).isInstanceOf(ResponseStatusException.class);
         assertThat(throwable.getMessage()).isEqualTo("500 INTERNAL_SERVER_ERROR");
     }

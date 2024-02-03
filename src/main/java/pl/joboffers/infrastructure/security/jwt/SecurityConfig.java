@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -38,7 +40,7 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf(csrf -> csrf.disable());
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests( auth -> auth
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
@@ -47,8 +49,8 @@ public class SecurityConfig {
                 .requestMatchers("/register/**").permitAll()
                 .requestMatchers("/swagger-resources/**").permitAll()
                 .anyRequest().authenticated())
-                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
-                .httpBasic(httpBasic -> httpBasic.disable())
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .httpBasic( AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();

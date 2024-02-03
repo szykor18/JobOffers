@@ -7,8 +7,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.testcontainers.containers.MongoDBContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.utility.DockerImageName;
 import pl.joboffers.BaseIntegrationTest;
 import pl.joboffers.ExampleJobOfferResponse;
 import pl.joboffers.domain.loginandregister.dto.RegisterResultDto;
@@ -29,6 +34,15 @@ public class UserWantToSeeOffersIntegrationTest extends BaseIntegrationTest impl
 
     @Autowired
     HttpOffersScheduler httpOffersScheduler;
+
+    @Container
+    public static final MongoDBContainer mongoDBcontainer3 = new MongoDBContainer(DockerImageName.parse("mongo:4.0.10"));
+    @DynamicPropertySource
+    public static void propertyOverride(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.mongodb.uri", mongoDBcontainer3::getReplicaSetUrl);
+        registry.add("joboffers.offer-fetcher.http.client.config.uri", () -> WIRE_MOCK_HOST);
+        registry.add("joboffers.offer-fetcher.http.client.config.port", () -> wireMockServer.getPort());
+    }
     @Test
     public void should_user_see_the_offers_but_have_to_be_logged_in_and_external_service_should_have_some_offers() throws Exception {
 

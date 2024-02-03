@@ -19,7 +19,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      ME_CONFIG_MONGODB_ADMI_NUSERNAME: root
+      ME_CONFIG_MONGODB_ADMIN_USERNAME: root
       ME_CONFIG_MONGODB_ADMIN_PASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
 
@@ -28,6 +28,7 @@ services:
     ports:
       - "63792:6379"
     restart: always
+    container_name: redis
 
   redis-commander:
     image: rediscommander/redis-commander:latest
@@ -36,3 +37,20 @@ services:
       - REDIS_HOSTS=local:redis:6379
     ports:
       - "8082:8081"
+
+  joboffers:
+    container_name: offers
+#    build: .
+    image: 211125330771.dkr.ecr.eu-central-1.amazonaws.com/joboffers:latest
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      MONGO_USER: admin
+      MONGO_PASSWORD: admin
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_DB_NAME: offers
+      MONGO_AUTH_SOURCE: offers
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
